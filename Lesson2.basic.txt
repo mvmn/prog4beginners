@@ -1,0 +1,8 @@
+10 LET sum = 1000
+20 LET p = 2
+30 LET periods = 6
+40 LET sum = sum + sum * (p / 100)
+50 LET periods = periods - 1
+60 IF periods > 0 THEN GOTO 40
+70 PRINT sum
+
