@@ -1,6 +1,6 @@
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -33,14 +33,12 @@ public class Lesson4Procedural {
         final int numStars = 100;
         int[] starsX = new int[numStars];
         int[] starsY = new int[numStars];
-        for (int i = 0; i < numStars; i++) {
-            starsX[i] = random.nextInt(fieldWidth);
-            starsY[i] = random.nextInt(fieldHeight);
-        }
+        generateStars(fieldWidth, fieldHeight, random, numStars, starsX, starsY);
 
         AtomicInteger score = new AtomicInteger(0);
 
         JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -100,7 +98,7 @@ public class Lesson4Procedural {
         frame.getContentPane().add(contents, BorderLayout.CENTER);
         frame.pack();
         frame.setResizable(false);
-        frame.setVisible(true);
+        SwingUtilities.invokeLater(() -> frame.setVisible(true));
 
         while (true) {
             if (enemyY.addAndGet(enemyAccel) > fieldHeight - 30) {
@@ -110,10 +108,7 @@ public class Lesson4Procedural {
                 playerX.set(fieldWidth / 2 - 5);
                 enemySize.set(50);
                 enemyAccel = 1;
-                for (int i = 0; i < numStars; i++) {
-                    starsX[i] = random.nextInt(fieldWidth);
-                    starsY[i] = random.nextInt(fieldHeight);
-                }
+                generateStars(fieldWidth, fieldHeight, random, numStars, starsX, starsY);
             }
             int key = keyPressed.get();
             if (key > 0) {
@@ -158,8 +153,17 @@ public class Lesson4Procedural {
         }
     }
 
+    private static void generateStars(int fieldWidth, int fieldHeight, Random random, int numStars, int[] starsX, int[] starsY) {
+        for (int i = 0; i < numStars; i++) {
+            starsX[i] = random.nextInt(fieldWidth);
+            starsY[i] = random.nextInt(fieldHeight);
+        }
+    }
+
     private static void quit(JFrame frame) {
-        frame.setVisible(false);
-        frame.dispose();
+        SwingUtilities.invokeLater(() -> {
+            frame.setVisible(false);
+            frame.dispose();
+        });
     }
 }
