@@ -59,6 +59,10 @@ public class Lesson4OOP {
             graphics.setColor(Color.RED);
             graphics.fillOval(x, y, size, 10);
         }
+
+        public boolean isHit(int fx) {
+            return fx >= x && fx < x + size;
+        }
     }
 
     public static class Star implements GraphicObject {
@@ -161,12 +165,11 @@ public class Lesson4OOP {
                 } else if (pressedKey == 38) {
                     player.firing = true;
 
-                    int ex = enemy.x;
-                    int fx = player.x + 4;
-                    if (fx >= ex && fx < ex + enemySize) {
+                    if (enemy.isHit(player.x + 4)) {
                         enemy = newEnemy();
                         if (enemySize > 10) {
-                            enemyAccel = 1 + (50 - --enemySize) / 5;
+                            enemySize--;
+                            enemyAccel = 1 + (50 - enemySize) / 5;
                         } else {
                             enemyAccel++;
                         }

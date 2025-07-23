@@ -141,7 +141,8 @@ public class Lesson4Procedural {
                         enemyX = random.nextInt(fieldWidth - enemySize);
                         enemyY = 0;
                         if (enemySize > 10) {
-                            enemyAccel = 1 + (50 - --enemySize) / 5;
+                            enemySize--;
+                            enemyAccel = 1 + (50 - enemySize) / 5;
                         } else {
                             enemyAccel++;
                         }
