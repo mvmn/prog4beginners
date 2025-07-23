@@ -16,18 +16,25 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Lesson4Procedural {
 
+    static volatile int keyPressed = -1;
+    static volatile int playerX;
+    static volatile int fireX;
+    static volatile int enemySize;
+    static volatile int enemyX;
+    static volatile int enemyY;
+    static volatile int playerAccel = 1;
+
+
     public static void main(String[] args) throws Exception {
         final int fieldWidth = 800;
         final int fieldHeight = 600;
-        AtomicInteger keyPressed = new AtomicInteger();
-        AtomicInteger playerX = new AtomicInteger(fieldWidth / 2 - 5);
-        int playerAccel = 1;
-        AtomicInteger fireX = new AtomicInteger(-1);
+        playerX = fieldWidth / 2 - 5;
+        fireX = -1;
 
-        AtomicInteger enemySize = new AtomicInteger(50);
+        enemySize = 50;
         Random random = new Random();
-        AtomicInteger enemyX = new AtomicInteger(random.nextInt(fieldWidth - enemySize.get()));
-        AtomicInteger enemyY = new AtomicInteger(0);
+        enemyX = random.nextInt(fieldWidth - enemySize);
+        enemyY = 0;
         int enemyAccel = 1;
 
         final int numStars = 100;
@@ -42,12 +49,14 @@ public class Lesson4Procedural {
         frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                keyPressed.set(e.getKeyCode());
+                keyPressed = e.getKeyCode();
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
-                keyPressed.compareAndSet(e.getKeyCode(), 0);
+                if (keyPressed == e.getKeyCode()) {
+                    keyPressed = 0;
+                }
             }
         });
         frame.getContentPane().setLayout(new BorderLayout());
@@ -70,19 +79,19 @@ public class Lesson4Procedural {
                 for (int i = 0; i < numStars; i++) {
                     graphics.fillOval(starsX[i], starsY[i], 3, 3);
                 }
+
                 graphics.setColor(Color.GREEN);
+                graphics.fillOval(playerX, 575, 10, 10);
+                graphics.fillRect(playerX, 580, 10, 20);
 
-                graphics.fillOval(playerX.get(), 575, 10, 10);
-                graphics.fillRect(playerX.get(), 580, 10, 20);
-
-                int fx = fireX.get();
+                int fx = fireX;
                 if (fx >= 0) {
                     graphics.setColor(Color.YELLOW);
                     graphics.fillRect(fx, 0, 2, 570);
                 }
 
                 graphics.setColor(Color.RED);
-                graphics.fillOval(enemyX.get(), enemyY.get(), enemySize.get(), 10);
+                graphics.fillOval(enemyX, enemyY, enemySize, 10);
 
                 graphics.setColor(Color.WHITE);
                 g2d.setComposite(alphaComposite50Percent);
@@ -101,38 +110,38 @@ public class Lesson4Procedural {
         SwingUtilities.invokeLater(() -> frame.setVisible(true));
 
         while (true) {
-            if (enemyY.addAndGet(enemyAccel) > fieldHeight - 30) {
+            enemyY += enemyAccel;
+            if (enemyY > fieldHeight - 30) {
                 score.set(0);
-                enemyX.set(random.nextInt(fieldWidth - enemySize.get()));
-                enemyY.set(0);
-                playerX.set(fieldWidth / 2 - 5);
-                enemySize.set(50);
+                enemyX = (random.nextInt(fieldWidth - enemySize));
+                enemyY = (0);
+                playerX = fieldWidth / 2 - 5;
+                enemySize = (50);
                 enemyAccel = 1;
                 generateStars(fieldWidth, fieldHeight, random, numStars, starsX, starsY);
             }
-            int key = keyPressed.get();
+            int key = keyPressed;
             if (key > 0) {
                 if (key == 81) {
                     quit(frame);
                     return;
                 }
-                int x = playerX.get();
-                if (key == 37 && (x - playerAccel) >= 0) {
-                    playerX.addAndGet(-playerAccel);
+                if (key == 37 && (playerX - playerAccel) >= 0) {
+                    playerX -= playerAccel;
                     playerAccel++;
-                } else if (key == 39 && (x + playerAccel) <= fieldWidth - 10) {
-                    playerX.addAndGet(playerAccel);
+                } else if (key == 39 && (playerX + playerAccel) <= fieldWidth - 10) {
+                    playerX += playerAccel;
                     playerAccel++;
                 } else if (key == 38) {
-                    fireX.set(x + 4);
+                    fireX = playerX + 4;
 
-                    int ex = enemyX.get();
-                    int fx = fireX.get();
-                    if (fx >= ex && fx < ex + enemySize.get()) {
-                        enemyX.set(random.nextInt(fieldWidth - enemySize.get()));
-                        enemyY.set(0);
-                        if (enemySize.get() > 10) {
-                            enemyAccel = 1 + (50 - enemySize.decrementAndGet()) / 5;
+                    int ex = enemyX;
+                    int fx = playerX + 4;
+                    if (fx >= ex && fx < ex + enemySize) {
+                        enemyX = random.nextInt(fieldWidth - enemySize);
+                        enemyY = 0;
+                        if (enemySize > 10) {
+                            enemyAccel = 1 + (50 - --enemySize) / 5;
                         } else {
                             enemyAccel++;
                         }
@@ -141,9 +150,7 @@ public class Lesson4Procedural {
 
                     frame.repaint();
                     Thread.sleep(20);
-                    fireX.set(-1);
-                } else {
-                    //playerAccel = 1;
+                    fireX = -1;
                 }
             } else {
                 playerAccel = 1;
