@@ -46,9 +46,9 @@ public class Lesson4Procedural {
         int[] starsY = new int[numStars];
         generateStars(fieldWidth, fieldHeight, random, numStars, starsX, starsY);
 
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.addKeyListener(new KeyAdapter() {
+        JFrame mainWindow = new JFrame();
+        mainWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        mainWindow.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 keyPressed = e.getKeyCode();
@@ -61,7 +61,6 @@ public class Lesson4Procedural {
                 }
             }
         });
-        frame.getContentPane().setLayout(new BorderLayout());
 
         JComponent contents = new JComponent() {
             private static final long serialVersionUID = -178839994636617669L;
@@ -71,14 +70,14 @@ public class Lesson4Procedural {
                 draw(graphics, numStars, starsX, starsY);
             }
         };
-
         contents.setPreferredSize(new Dimension(fieldWidth, fieldHeight));
 
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.getContentPane().add(contents, BorderLayout.CENTER);
-        frame.pack();
-        frame.setResizable(false);
-        SwingUtilities.invokeLater(() -> frame.setVisible(true));
+        mainWindow.getContentPane().setLayout(new BorderLayout());
+        mainWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        mainWindow.getContentPane().add(contents, BorderLayout.CENTER);
+        mainWindow.pack();
+        mainWindow.setResizable(false);
+        SwingUtilities.invokeLater(() -> mainWindow.setVisible(true));
 
         while (true) {
             enemyY += enemyAccel;
@@ -89,7 +88,7 @@ public class Lesson4Procedural {
             int key = keyPressed;
             if (key > 0) {
                 if (key == 81) {
-                    quit(frame);
+                    close(mainWindow);
                     return;
                 }
                 if (key == 37 && (playerX - playerAccel) >= 0) {
@@ -99,7 +98,7 @@ public class Lesson4Procedural {
                     playerX += playerAccel;
                     playerAccel++;
                 } else if (key == 38) {
-                    if (fire(fieldWidth, random, frame)) {
+                    if (fire(fieldWidth, random, mainWindow)) {
                         nextEnemy(fieldWidth, random);
                         score++;
                     }
@@ -107,7 +106,7 @@ public class Lesson4Procedural {
             } else {
                 playerAccel = 1;
             }
-            frame.repaint();
+            mainWindow.repaint();
             Thread.sleep(20);
         }
     }
@@ -199,7 +198,7 @@ public class Lesson4Procedural {
         }
     }
 
-    private static void quit(JFrame frame) {
+    private static void close(JFrame frame) {
         SwingUtilities.invokeLater(() -> {
             frame.setVisible(false);
             frame.dispose();
