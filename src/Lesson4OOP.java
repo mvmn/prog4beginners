@@ -153,7 +153,11 @@ public class Lesson4OOP {
             return enemy;
         }
 
-        public void executeStep() throws Exception {
+        public boolean executeStep() throws Exception {
+            if (pressedKey == 81) {
+                quit();
+                return false;
+            }
             enemy.y += enemyAccel;
             if (enemy.y > fieldHeight - 30) {
                 reset();
@@ -184,6 +188,14 @@ public class Lesson4OOP {
                     player.acceleration = 1;
                 }
             }
+            return true;
+        }
+
+        private void quit() {
+            SwingUtilities.invokeLater(() -> {
+                mainWindow.setVisible(false);
+                mainWindow.dispose();
+            });
         }
     }
 
@@ -216,9 +228,6 @@ public class Lesson4OOP {
         frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == 81) {
-                    quit(frame);
-                }
                 game.pressedKey = e.getKeyCode();
             }
 
@@ -231,17 +240,9 @@ public class Lesson4OOP {
         });
         frame.start(game);
 
-        while (game.pressedKey != 81) {
-            game.executeStep();
+        while (game.executeStep()) {
             frame.repaint();
             Thread.sleep(20);
         }
-    }
-
-    private static void quit(JFrame frame) {
-        SwingUtilities.invokeLater(() -> {
-            frame.setVisible(false);
-            frame.dispose();
-        });
     }
 }
