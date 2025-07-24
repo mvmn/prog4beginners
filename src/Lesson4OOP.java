@@ -19,6 +19,36 @@ public class Lesson4OOP {
         public void draw(Graphics graphics);
     }
 
+    public static class Star implements GraphicObject {
+        public int x;
+        public int y;
+
+        public Star(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        public void draw(Graphics graphics) {
+            graphics.setColor(Color.BLUE);
+            graphics.fillOval(x, y, 3, 3);
+        }
+    }
+
+    public static class Enemy implements GraphicObject {
+        public volatile int x;
+        public volatile int y;
+        public int size;
+
+        public void draw(Graphics graphics) {
+            graphics.setColor(Color.RED);
+            graphics.fillOval(x, y, size, 10);
+        }
+
+        public boolean isHit(int fx) {
+            return fx >= x && fx < x + size;
+        }
+    }
+
     public static class Player implements GraphicObject {
         public volatile int x = 400;
         public volatile int acceleration = 1;
@@ -47,36 +77,6 @@ public class Lesson4OOP {
                 x += acceleration;
                 acceleration++;
             }
-        }
-    }
-
-    public static class Enemy implements GraphicObject {
-        public volatile int x;
-        public volatile int y;
-        public int size;
-
-        public void draw(Graphics graphics) {
-            graphics.setColor(Color.RED);
-            graphics.fillOval(x, y, size, 10);
-        }
-
-        public boolean isHit(int fx) {
-            return fx >= x && fx < x + size;
-        }
-    }
-
-    public static class Star implements GraphicObject {
-        public int x;
-        public int y;
-
-        public Star(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public void draw(Graphics graphics) {
-            graphics.setColor(Color.BLUE);
-            graphics.fillOval(x, y, 3, 3);
         }
     }
 
