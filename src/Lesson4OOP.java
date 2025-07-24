@@ -20,8 +20,8 @@ public class Lesson4OOP {
     }
 
     public static class Star implements GraphicObject {
-        public int x;
-        public int y;
+        private final int x;
+        private final int y;
 
         public Star(int x, int y) {
             this.x = x;
@@ -107,7 +107,6 @@ public class Lesson4OOP {
         }
 
         private Star[] generateStars() {
-            Random random = new Random();
             Star[] result = new Star[100];
             for (int i = 0; i < result.length; i++) {
                 int x = random.nextInt(fieldWidth);
