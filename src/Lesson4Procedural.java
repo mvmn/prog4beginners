@@ -12,7 +12,6 @@ import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Lesson4Procedural {
 
@@ -23,6 +22,12 @@ public class Lesson4Procedural {
     static volatile int enemyX;
     static volatile int enemyY;
     static volatile int playerAccel = 1;
+    static volatile int enemyAccel = 1;
+    static volatile int score = 0;
+
+    static final Font scoreFont = new Font("SansSerif", Font.BOLD, 36);
+    static final AlphaComposite alphaComposite50Percent = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
+    static final AlphaComposite alphaComposite100Percent = AlphaComposite.getInstance(AlphaComposite.SRC_OVER);
 
 
     public static void main(String[] args) throws Exception {
@@ -35,14 +40,11 @@ public class Lesson4Procedural {
         Random random = new Random();
         enemyX = random.nextInt(fieldWidth - enemySize);
         enemyY = 0;
-        int enemyAccel = 1;
 
         final int numStars = 100;
         int[] starsX = new int[numStars];
         int[] starsY = new int[numStars];
         generateStars(fieldWidth, fieldHeight, random, numStars, starsX, starsY);
-
-        AtomicInteger score = new AtomicInteger(0);
 
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -61,43 +63,12 @@ public class Lesson4Procedural {
         });
         frame.getContentPane().setLayout(new BorderLayout());
 
-        final Font scoreFont = new Font("SansSerif", Font.BOLD, 36);
-        AlphaComposite alphaComposite50Percent = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
-        AlphaComposite alphaComposite100Percent = AlphaComposite.getInstance(AlphaComposite.SRC_OVER);
-
         JComponent contents = new JComponent() {
             private static final long serialVersionUID = -178839994636617669L;
 
             @Override
             public void paintComponent(Graphics graphics) {
-                Graphics2D g2d = (Graphics2D) graphics;
-                g2d.setComposite(alphaComposite100Percent);
-                graphics.setColor(Color.BLACK);
-                graphics.fillRect(0, 0, graphics.getClipBounds().width, graphics.getClipBounds().height);
-
-                graphics.setColor(Color.BLUE);
-                for (int i = 0; i < numStars; i++) {
-                    graphics.fillOval(starsX[i], starsY[i], 3, 3);
-                }
-
-                graphics.setColor(Color.GREEN);
-                graphics.fillOval(playerX, 575, 10, 10);
-                graphics.fillRect(playerX, 580, 10, 20);
-
-                int fx = fireX;
-                if (fx >= 0) {
-                    graphics.setColor(Color.YELLOW);
-                    graphics.fillRect(fx, 0, 2, 570);
-                }
-
-                graphics.setColor(Color.RED);
-                graphics.fillOval(enemyX, enemyY, enemySize, 10);
-
-                graphics.setColor(Color.WHITE);
-                g2d.setComposite(alphaComposite50Percent);
-                graphics.setFont(scoreFont);
-                graphics.drawString(String.valueOf(score.get()), 2, 38);
-                Toolkit.getDefaultToolkit().sync();
+                draw(graphics, numStars, starsX, starsY);
             }
         };
 
@@ -112,12 +83,7 @@ public class Lesson4Procedural {
         while (true) {
             enemyY += enemyAccel;
             if (enemyY > fieldHeight - 30) {
-                score.set(0);
-                enemyX = (random.nextInt(fieldWidth - enemySize));
-                enemyY = (0);
-                playerX = fieldWidth / 2 - 5;
-                enemySize = (50);
-                enemyAccel = 1;
+                enemyAccel = resetGame(fieldWidth, random);
                 generateStars(fieldWidth, fieldHeight, random, numStars, starsX, starsY);
             }
             int key = keyPressed;
@@ -133,25 +99,10 @@ public class Lesson4Procedural {
                     playerX += playerAccel;
                     playerAccel++;
                 } else if (key == 38) {
-                    fireX = playerX + 4;
-
-                    int ex = enemyX;
-                    int fx = playerX + 4;
-                    if (fx >= ex && fx < ex + enemySize) {
-                        enemyX = random.nextInt(fieldWidth - enemySize);
-                        enemyY = 0;
-                        if (enemySize > 10) {
-                            enemySize--;
-                            enemyAccel = 1 + (50 - enemySize) / 5;
-                        } else {
-                            enemyAccel++;
-                        }
-                        score.incrementAndGet();
+                    if (fire(fieldWidth, random, frame)) {
+                        nextEnemy(fieldWidth, random);
+                        score++;
                     }
-
-                    frame.repaint();
-                    Thread.sleep(20);
-                    fireX = -1;
                 }
             } else {
                 playerAccel = 1;
@@ -159,6 +110,86 @@ public class Lesson4Procedural {
             frame.repaint();
             Thread.sleep(20);
         }
+    }
+
+    private static void nextEnemy(int fieldWidth, Random random) {
+        enemyX = random.nextInt(fieldWidth - enemySize);
+        enemyY = 0;
+        if (enemySize > 10) {
+            enemySize--;
+            enemyAccel = 1 + (50 - enemySize) / 5;
+        } else {
+            enemyAccel++;
+        }
+    }
+
+    private static boolean fire(int fieldWidth, Random random, JFrame frame) throws InterruptedException {
+        fireX = playerX + 4;
+
+        boolean hit = fireX >= enemyX && fireX < enemyX + enemySize;
+
+        frame.repaint();
+        Thread.sleep(20);
+        fireX = -1;
+
+        return hit;
+    }
+
+    private static int resetGame(int fieldWidth, Random random) {
+        int enemyAccel;
+        score = 0;
+        enemyX = (random.nextInt(fieldWidth - enemySize));
+        enemyY = (0);
+        playerX = fieldWidth / 2 - 5;
+        enemySize = (50);
+        enemyAccel = 1;
+        return enemyAccel;
+    }
+
+    private static void draw(Graphics graphics, int numStars, int[] starsX, int[] starsY) {
+        Graphics2D g2d = (Graphics2D) graphics;
+        drawBackground(graphics, g2d);
+        drawStars(g2d, numStars, starsX, starsY);
+        drawPlayer(g2d);
+        drawEnemy(g2d);
+        drawScore(g2d);
+        Toolkit.getDefaultToolkit().sync();
+    }
+
+    private static void drawBackground(Graphics graphics, Graphics2D g2d) {
+        g2d.setComposite(alphaComposite100Percent);
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(0, 0, graphics.getClipBounds().width, graphics.getClipBounds().height);
+    }
+
+    private static void drawStars(Graphics2D graphics, int numStars, int[] starsX, int[] starsY) {
+        graphics.setColor(Color.BLUE);
+        for (int i = 0; i < numStars; i++) {
+            graphics.fillOval(starsX[i], starsY[i], 3, 3);
+        }
+    }
+
+    private static void drawPlayer(Graphics2D graphics) {
+        graphics.setColor(Color.GREEN);
+        graphics.fillOval(playerX, 575, 10, 10);
+        graphics.fillRect(playerX, 580, 10, 20);
+
+        if (fireX >= 0) {
+            graphics.setColor(Color.YELLOW);
+            graphics.fillRect(fireX, 0, 2, 570);
+        }
+    }
+
+    private static void drawEnemy(Graphics2D graphics) {
+        graphics.setColor(Color.RED);
+        graphics.fillOval(enemyX, enemyY, enemySize, 10);
+    }
+
+    private static void drawScore(Graphics2D g2d) {
+        g2d.setColor(Color.WHITE);
+        g2d.setComposite(alphaComposite50Percent);
+        g2d.setFont(scoreFont);
+        g2d.drawString(String.valueOf(score), 2, 38);
     }
 
     private static void generateStars(int fieldWidth, int fieldHeight, Random random, int numStars, int[] starsX, int[] starsY) {
