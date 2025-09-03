@@ -5,7 +5,7 @@ import java.awt.Graphics;
 
 public class Player implements GraphicObject {
     private volatile int x = 400;
-    public volatile int acceleration = 1;
+    private volatile int acceleration = 1;
     public volatile boolean firing = false;
 
     public int getX() {
@@ -41,4 +41,9 @@ public class Player implements GraphicObject {
             acceleration++;
         }
     }
+
+    public void stop() {
+        acceleration = 1;
+    }
+
 }

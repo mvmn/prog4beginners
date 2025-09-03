@@ -102,7 +102,7 @@ public class Game {
 
                 player.firing = false;
             } else {
-                player.acceleration = 1;
+                player.stop();
             }
         }
         return true;
