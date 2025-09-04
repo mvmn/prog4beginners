@@ -10,11 +10,11 @@ public class Game {
     public static final int FIELD_HEIGHT = 600;
     private final MainWindow mainWindow;
     private final Random random = new Random();
-    public Player player = new Player();
-    public volatile Enemy enemy;
-    public volatile int score = 0;
+    private final Player player = new Player();
+    private volatile Enemy enemy;
+    private volatile int score = 0;
     private volatile int enemySize = 50;
-    public Star[] stars;
+    private Star[] stars;
 
     public volatile int pressedKey = -1;
 
@@ -106,5 +106,21 @@ public class Game {
             mainWindow.setVisible(false);
             mainWindow.dispose();
         });
+    }
+
+    public Player getPlayer() {
+        return this.player;
+    }
+
+    public Enemy getEnemy() {
+        return this.enemy;
+    }
+
+    public int getScore() {
+        return this.score;
+    }
+
+    public Star[] getStars() {
+        return this.stars;
     }
 }

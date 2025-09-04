@@ -34,16 +34,16 @@ public class MainWindow extends JFrame {
                 graphics.setColor(Color.BLACK);
                 graphics.fillRect(0, 0, graphics.getClipBounds().width, graphics.getClipBounds().height);
 
-                for (Star star : game.stars) {
+                for (Star star : game.getStars()) {
                     star.draw(graphics);
                 }
-                game.player.draw(graphics);
-                game.enemy.draw(graphics);
+                game.getPlayer().draw(graphics);
+                game.getEnemy().draw(graphics);
 
                 graphics.setColor(Color.WHITE);
                 g2d.setComposite(alphaComposite50Percent);
                 graphics.setFont(scoreFont);
-                graphics.drawString(String.valueOf(game.score), 2, 38);
+                graphics.drawString(String.valueOf(game.getScore()), 2, 38);
                 Toolkit.getDefaultToolkit().sync();
             }
         };
