@@ -6,7 +6,7 @@ import java.awt.Graphics;
 public class Player implements GraphicObject {
     private volatile int x = 400;
     private volatile int acceleration = 1;
-    public volatile boolean firing = false;
+    private volatile boolean firing = false;
 
     public int getX() {
         return x;
@@ -46,4 +46,7 @@ public class Player implements GraphicObject {
         acceleration = 1;
     }
 
+    public void setFiring(boolean firing) {
+        this.firing = firing;
+    }
 }

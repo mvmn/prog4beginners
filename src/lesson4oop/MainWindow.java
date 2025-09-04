@@ -47,7 +47,7 @@ public class MainWindow extends JFrame {
                 Toolkit.getDefaultToolkit().sync();
             }
         };
-        contents.setPreferredSize(new Dimension(game.fieldWidth, game.fieldHeight));
+        contents.setPreferredSize(new Dimension(game.FIELD_WIDTH, game.FIELD_HEIGHT));
         this.getContentPane().add(contents, BorderLayout.CENTER);
         this.pack();
         this.setResizable(false);
