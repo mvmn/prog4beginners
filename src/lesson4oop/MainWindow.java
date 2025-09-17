@@ -34,11 +34,19 @@ public class MainWindow extends JFrame {
                 graphics.setColor(Color.BLACK);
                 graphics.fillRect(0, 0, graphics.getClipBounds().width, graphics.getClipBounds().height);
 
+                GraphicObject[] objectsToDraw = new GraphicObject[game.getStars().length + 3];
+                int i = 0;
                 for (Star star : game.getStars()) {
-                    star.draw(graphics);
+                    objectsToDraw[i++] = star;
+                    // star.draw(graphics);
                 }
-                game.getPlayer().draw(graphics);
-                game.getEnemy().draw(graphics);
+                objectsToDraw[i++] = game.getPlayer();
+                objectsToDraw[i++] = game.getEnemy();
+                objectsToDraw[i++] = game.getEnemy2();
+
+                for (GraphicObject objectToDraw : objectsToDraw) {
+                    objectToDraw.draw(graphics);
+                }
 
                 graphics.setColor(Color.WHITE);
                 g2d.setComposite(alphaComposite50Percent);

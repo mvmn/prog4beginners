@@ -12,13 +12,13 @@ public class Game {
     private final Random random = new Random();
     private final Player player = new Player();
     private volatile Enemy enemy;
+    private volatile Enemy enemy2;
     private volatile int score = 0;
     private volatile int enemySize = 50;
+    private volatile int enemySpeed = 1;
     private Star[] stars;
 
     public volatile int pressedKey = -1;
-
-    private volatile int enemySpeed = 1;
 
     public Game(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
@@ -56,6 +56,7 @@ public class Game {
         this.stars = generateStars();
         this.player.reset();
         this.enemy = newEnemy();
+        this.enemy2 = newEnemy();
     }
 
     private Enemy newEnemy() {
@@ -69,7 +70,8 @@ public class Game {
             return false;
         }
         enemy.move();
-        if (enemy.getY() > FIELD_HEIGHT - 30) {
+        enemy2.move();
+        if (enemyWon(enemy) || enemyWon(enemy2)) {
             reset();
         } else {
             if (pressedKey == 37) {
@@ -79,14 +81,21 @@ public class Game {
             } else if (pressedKey == 38) {
                 player.setFiring(true);
 
-                if (enemy.isHit(player.getX() + 4)) {
+                boolean enemy1Hit = enemy.isHit(player.getFireCoordinate());
+                boolean enemy2Hit = enemy2.isHit(player.getFireCoordinate());
+
+                if (enemy1Hit || enemy2Hit) {
                     if (enemySize > 10) {
                         enemySize--;
                         enemySpeed = 1 + (50 - enemySize) / 5;
                     } else {
                         enemySpeed++;
                     }
-                    enemy = newEnemy();
+                    if (enemy1Hit) {
+                        enemy = newEnemy();
+                    } else if (enemy2Hit) {
+                        enemy2 = newEnemy();
+                    }
                     score++;
                 }
 
@@ -99,6 +108,10 @@ public class Game {
             }
         }
         return true;
+    }
+
+    private boolean enemyWon(Enemy enemy) {
+        return enemy.getY() > FIELD_HEIGHT - 30;
     }
 
     private void quit() {
@@ -114,6 +127,10 @@ public class Game {
 
     public Enemy getEnemy() {
         return this.enemy;
+    }
+
+    public Enemy getEnemy2() {
+        return this.enemy2;
     }
 
     public int getScore() {

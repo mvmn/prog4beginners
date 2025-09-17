@@ -22,7 +22,7 @@ public class Lesson4Procedural {
     static volatile int enemyX;
     static volatile int enemyY;
     static volatile int playerAccel = 1;
-    static volatile int enemyAccel = 1;
+    static volatile int enemySpeed = 1;
     static volatile int score = 0;
 
     static final Font scoreFont = new Font("SansSerif", Font.BOLD, 36);
@@ -57,7 +57,7 @@ public class Lesson4Procedural {
             @Override
             public void keyReleased(KeyEvent e) {
                 if (keyPressed == e.getKeyCode()) {
-                    keyPressed = 0;
+                    keyPressed = -1;
                 }
             }
         });
@@ -80,9 +80,9 @@ public class Lesson4Procedural {
         SwingUtilities.invokeLater(() -> mainWindow.setVisible(true));
 
         while (true) {
-            enemyY += enemyAccel;
+            enemyY += enemySpeed;
             if (enemyY > fieldHeight - 30) {
-                enemyAccel = resetGame(fieldWidth, random);
+                enemySpeed = resetGame(fieldWidth, random);
                 generateStars(fieldWidth, fieldHeight, random, numStars, starsX, starsY);
             }
             int key = keyPressed;
@@ -116,9 +116,9 @@ public class Lesson4Procedural {
         enemyY = 0;
         if (enemySize > 10) {
             enemySize--;
-            enemyAccel = 1 + (50 - enemySize) / 5;
+            enemySpeed = 1 + (50 - enemySize) / 5;
         } else {
-            enemyAccel++;
+            enemySpeed++;
         }
     }
 
@@ -138,9 +138,9 @@ public class Lesson4Procedural {
         int enemyAccel;
         score = 0;
         enemyX = (random.nextInt(fieldWidth - enemySize));
-        enemyY = (0);
+        enemyY = 0;
         playerX = fieldWidth / 2 - 5;
-        enemySize = (50);
+        enemySize = 50;
         enemyAccel = 1;
         return enemyAccel;
     }

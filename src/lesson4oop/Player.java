@@ -3,13 +3,15 @@ package lesson4oop;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class Player implements GraphicObject {
+public class Player extends GraphicObject {
     private volatile int x = 400;
     private volatile int acceleration = 1;
     private volatile boolean firing = false;
 
-    public int getX() {
-        return x;
+    private final int width = 20;
+
+    public int getFireCoordinate() {
+        return x + width/2;
     }
 
     public void reset() {
@@ -19,12 +21,12 @@ public class Player implements GraphicObject {
 
     public void draw(Graphics graphics) {
         graphics.setColor(Color.GREEN);
-        graphics.fillOval(x, 575, 10, 10);
-        graphics.fillRect(x, 580, 10, 20);
+        graphics.fillOval(x, 575, width, 10);
+        graphics.fillRect(x, 580, width, 20);
 
         if (firing) {
             graphics.setColor(Color.YELLOW);
-            graphics.fillRect(x + 4, 0, 2, 570);
+            graphics.fillRect(x + width/2 - 1, 0, 2, 570);
         }
     }
 

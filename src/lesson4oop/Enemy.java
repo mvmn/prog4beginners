@@ -3,7 +3,7 @@ package lesson4oop;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class Enemy implements GraphicObject {
+public class Enemy extends GraphicObject {
     private final int x;
     private volatile int y = 0;
     private final int size;
