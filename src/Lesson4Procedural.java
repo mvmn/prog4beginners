@@ -41,7 +41,7 @@ public class Lesson4Procedural {
         enemyX = random.nextInt(fieldWidth - enemySize);
         enemyY = 0;
 
-        final int numStars = 100;
+        final int numStars = 50;
         int[] starsX = new int[numStars];
         int[] starsY = new int[numStars];
         generateStars(fieldWidth, fieldHeight, random, numStars, starsX, starsY);
@@ -164,7 +164,7 @@ public class Lesson4Procedural {
     private static void drawStars(Graphics2D graphics, int numStars, int[] starsX, int[] starsY) {
         graphics.setColor(Color.BLUE);
         for (int i = 0; i < numStars; i++) {
-            graphics.fillOval(starsX[i], starsY[i], 3, 3);
+            graphics.fillOval(starsX[i], starsY[i], 9, 9);
         }
     }
 

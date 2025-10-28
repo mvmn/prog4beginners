@@ -34,15 +34,16 @@ public class MainWindow extends JFrame {
                 graphics.setColor(Color.BLACK);
                 graphics.fillRect(0, 0, graphics.getClipBounds().width, graphics.getClipBounds().height);
 
-                GraphicObject[] objectsToDraw = new GraphicObject[game.getStars().length + 3];
+                GraphicObject[] objectsToDraw = new GraphicObject[game.getStars().length + 1 + game.getEnemies().length];
                 int i = 0;
                 for (Star star : game.getStars()) {
                     objectsToDraw[i++] = star;
                     // star.draw(graphics);
                 }
                 objectsToDraw[i++] = game.getPlayer();
-                objectsToDraw[i++] = game.getEnemy();
-                objectsToDraw[i++] = game.getEnemy2();
+                for(Enemy enemy : game.getEnemies()) {
+                    objectsToDraw[i++] = enemy;
+                }
 
                 for (GraphicObject objectToDraw : objectsToDraw) {
                     objectToDraw.draw(graphics);

@@ -8,7 +8,7 @@ public class Player extends GraphicObject {
     private volatile int acceleration = 1;
     private volatile boolean firing = false;
 
-    private final int width = 20;
+    private final int width = 10;
 
     public int getFireCoordinate() {
         return x + width/2;

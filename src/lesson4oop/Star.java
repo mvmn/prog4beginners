@@ -14,6 +14,6 @@ public class Star extends GraphicObject {
 
     public void draw(Graphics graphics) {
         graphics.setColor(Color.BLUE);
-        graphics.fillOval(x, y, 3, 3);
+        graphics.fillOval(x, y, 6, 6);
     }
 }
