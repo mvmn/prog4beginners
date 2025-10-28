@@ -6,8 +6,8 @@ import java.awt.event.KeyEvent;
 import java.util.Random;
 
 public class Game {
-    public static final int FIELD_WIDTH = 800;
-    public static final int FIELD_HEIGHT = 600;
+    public static final int FIELD_WIDTH = 1024;
+    public static final int FIELD_HEIGHT = 768;
     private final MainWindow mainWindow;
     private final Random random = new Random();
     private final Player player = new Player();
@@ -54,7 +54,7 @@ public class Game {
         this.enemySize = 50;
         this.stars = generateStars(100);
         this.player.reset();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < this.enemies.length; i++) {
             this.enemies[i] = newEnemy();
         }
     }

@@ -33,16 +33,16 @@ public class Enemy extends GraphicObject {
     public void move() {
         this.y += speed;
 
-        if(this.x+offset>=0 && this.x+offset+size<800) {
+        if (this.x + offset >= 0 && this.x + offset + size < Game.FIELD_WIDTH) {
             this.x += offset;
         }
-        if(offset>0) {
-            offset-=1;
-        } else if(offset<-1) {
-            offset+=1;
-        } else if(offset==0) {
+        if (offset > 0) {
+            offset -= 1;
+        } else if (offset < -1) {
+            offset += 1;
+        } else if (offset == 0) {
             offset = -11;
-        } else if(offset==-1) {
+        } else if (offset == -1) {
             offset = 10;
         }
     }

@@ -4,14 +4,14 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 public class Player extends GraphicObject {
-    private volatile int x = 400;
+    private volatile int x = Game.FIELD_WIDTH / 2;
     private volatile int acceleration = 1;
     private volatile boolean firing = false;
 
     private final int width = 10;
 
     public int getFireCoordinate() {
-        return x + width/2;
+        return x + width / 2;
     }
 
     public void reset() {
@@ -21,12 +21,12 @@ public class Player extends GraphicObject {
 
     public void draw(Graphics graphics) {
         graphics.setColor(Color.GREEN);
-        graphics.fillOval(x, 575, width, 10);
-        graphics.fillRect(x, 580, width, 20);
+        graphics.fillOval(x, Game.FIELD_HEIGHT - 25, width, 10);
+        graphics.fillRect(x, Game.FIELD_HEIGHT - 20, width, 20);
 
         if (firing) {
             graphics.setColor(Color.YELLOW);
-            graphics.fillRect(x + width/2 - 1, 0, 2, 570);
+            graphics.fillRect(x + width / 2 - 1, 0, 2, Game.FIELD_HEIGHT - 30);
         }
     }
 
@@ -38,7 +38,7 @@ public class Player extends GraphicObject {
     }
 
     public void right() {
-        if ((x + acceleration) <= 800 - 10) {
+        if ((x + acceleration) <= Game.FIELD_WIDTH - 10) {
             x += acceleration;
             acceleration++;
         }
