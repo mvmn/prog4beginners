@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 public class Star extends GraphicObject {
+
+    private static final Color[] COLORS = {Color.BLUE, Color.CYAN, Color.GREEN, Color.RED, Color.MAGENTA};
     private final int x;
     private final int y;
 
@@ -13,7 +15,7 @@ public class Star extends GraphicObject {
     }
 
     public void draw(Graphics graphics) {
-        graphics.setColor(Color.BLUE);
+        graphics.setColor(COLORS[(x + y) % COLORS.length]);
         graphics.fillOval(x, y, 6, 6);
     }
 }
