@@ -11,14 +11,13 @@ public class Game {
     private final MainWindow mainWindow;
     private final Random random = new Random();
     private final Player player = new Player();
-    private volatile Enemy enemy;
+    private final Enemy[] enemies = new Enemy[5];
     private volatile int score = 0;
     private volatile int enemySize = 50;
+    private volatile int enemySpeed = 1;
     private Star[] stars;
 
     public volatile int pressedKey = -1;
-
-    private volatile int enemySpeed = 1;
 
     public Game(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
@@ -39,8 +38,8 @@ public class Game {
         reset();
     }
 
-    private Star[] generateStars() {
-        Star[] result = new Star[100];
+    private Star[] generateStars(int numberOfStars) {
+        Star[] result = new Star[numberOfStars];
         for (int i = 0; i < result.length; i++) {
             int x = random.nextInt(FIELD_WIDTH);
             int y = random.nextInt(FIELD_HEIGHT);
@@ -53,9 +52,11 @@ public class Game {
         this.score = 0;
         this.enemySpeed = 1;
         this.enemySize = 50;
-        this.stars = generateStars();
+        this.stars = generateStars(100);
         this.player.reset();
-        this.enemy = newEnemy();
+        for (int i = 0; i < 5; i++) {
+            this.enemies[i] = newEnemy();
+        }
     }
 
     private Enemy newEnemy() {
@@ -68,8 +69,15 @@ public class Game {
             quit();
             return false;
         }
-        enemy.move();
-        if (enemy.getY() > FIELD_HEIGHT - 30) {
+        boolean atLeastOneEnemyWon = false;
+        for (Enemy enemy : this.enemies) {
+            enemy.move();
+            if (enemyWon(enemy)) {
+                atLeastOneEnemyWon = true;
+                break;
+            }
+        }
+        if (atLeastOneEnemyWon) {
             reset();
         } else {
             if (pressedKey == 37) {
@@ -79,14 +87,22 @@ public class Game {
             } else if (pressedKey == 38) {
                 player.setFiring(true);
 
-                if (enemy.isHit(player.getX() + 4)) {
+                int hitIndex = -1;
+                for (int i = 0; i < this.enemies.length; i++) {
+                    if (this.enemies[i].isHit(player.getFireCoordinate())) {
+                        hitIndex = i;
+                        break;
+                    }
+                }
+
+                if (hitIndex>=0) {
                     if (enemySize > 10) {
                         enemySize--;
                         enemySpeed = 1 + (50 - enemySize) / 5;
                     } else {
                         enemySpeed++;
                     }
-                    enemy = newEnemy();
+                    this.enemies[hitIndex] = newEnemy();
                     score++;
                 }
 
@@ -101,6 +117,10 @@ public class Game {
         return true;
     }
 
+    private boolean enemyWon(Enemy enemy) {
+        return enemy.getY() > FIELD_HEIGHT - 30;
+    }
+
     private void quit() {
         SwingUtilities.invokeLater(() -> {
             mainWindow.setVisible(false);
@@ -112,8 +132,8 @@ public class Game {
         return this.player;
     }
 
-    public Enemy getEnemy() {
-        return this.enemy;
+    public Enemy[] getEnemies() {
+        return this.enemies;
     }
 
     public int getScore() {

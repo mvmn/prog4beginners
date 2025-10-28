@@ -3,7 +3,7 @@ package lesson4oop;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class Star implements GraphicObject {
+public class Star extends GraphicObject {
     private final int x;
     private final int y;
 
@@ -14,6 +14,6 @@ public class Star implements GraphicObject {
 
     public void draw(Graphics graphics) {
         graphics.setColor(Color.BLUE);
-        graphics.fillOval(x, y, 3, 3);
+        graphics.fillOval(x, y, 6, 6);
     }
 }

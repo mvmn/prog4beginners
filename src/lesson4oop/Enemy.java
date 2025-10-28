@@ -3,11 +3,13 @@ package lesson4oop;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class Enemy implements GraphicObject {
-    private final int x;
+public class Enemy extends GraphicObject {
+    private volatile int x;
     private volatile int y = 0;
     private final int size;
     private final int speed;
+
+    private volatile int offset = 10;
 
     public Enemy(int size, int x, int speed) {
         this.size = size;
@@ -30,5 +32,18 @@ public class Enemy implements GraphicObject {
 
     public void move() {
         this.y += speed;
+
+        if(this.x+offset>=0 && this.x+offset+size<800) {
+            this.x += offset;
+        }
+        if(offset>0) {
+            offset-=1;
+        } else if(offset<-1) {
+            offset+=1;
+        } else if(offset==0) {
+            offset = -11;
+        } else if(offset==-1) {
+            offset = 10;
+        }
     }
 }
